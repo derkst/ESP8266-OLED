@@ -1,0 +1,89 @@
+SSD1306 OLED I2C driver
+
+Derk Steggewentz, 3/2015 
+
+This is a I2C driver for SSD1306 OLED displays including graphics library.
+
+The graphics library part (gfx_ functions) is a heavily modified version of the Adafruit graphics library,
+
+No license restrictions on my part, do whatever you want as long as you follow the derived license requirements for the graphics library part.
+
+Usage:
+
+
+- Choose the 2 GPIO pins to be used for the I2C bus and connect the display to it and VCC/GND.
+
+- Don’t forget to add pull-up resistors to SDA and SCL (something like 2.2k to 10k)
+
+- configuration settings for these GPIOs are at the top of i2c_master.h, adjust to your choosen GPIOs
+
+- in your code call i2c_master_gpio_init() before using any i2c devices
+
+- the display needs to be initialized before it can be used via display_init(0x3c), (use the 7bit i2c address of your display)
+
+Examples:
+
+
+
+// clear display
+
+display_clear();
+
+display_update();
+
+
+
+
+// draw a line
+
+gfx_drawLine(0,0,60,60,WHITE);
+
+display_update();
+
+
+
+
+// text/line printing
+
+gfx_setTextSize(1);
+
+gfx_setTextColor(WHITE);
+
+gfx_setCursor(0,0);
+
+gfx_println("test line 1 ...");
+
+gfx_println("2nd line ...");
+
+display_update();    
+
+
+
+
+//scrolling
+
+gfx_setTextSize(2);
+
+gfx_setTextColor(WHITE);
+
+gfx_setCursor(10,0);
+
+gfx_println("scroll");
+
+display_update();    
+     
+
+
+display_scroll(SCROLL_PAGE_0,SCROLL_PAGE_7,SCROLL_RIGHT,SCROLL_SPEED_7);
+os_delay_us(3000000);
+
+display_stopscroll();
+
+
+see ssd1306.h for the entire API
+
+
+The file i2c_master.c from Espressif is slightly modified to allow higher I2C bus speeds. 100kHz I2C clock speed turned out to be a bit slow for the display. Use the I2C_CLOCK macro on the top of i2c_master.c to adapt the i2c speed to your needs.
+
+
+
